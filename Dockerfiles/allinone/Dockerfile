@@ -147,6 +147,9 @@ RUN rm "${OPENCAST_CONFIG}/org.opencastproject.organization-mh_default_org.cfg-t
 
 WORKDIR "${OPENCAST_HOME}"
 
+COPY ../../docker-compose/opencast-moodle/org.apache.karaf.features.cfg "${OPENCAST_HOME}/etc/org.apache.karaf.features.cfg"
+COPY ../../docker-compose/opencast-moodle/org.opencastproject.userdirectory.moodle-default.cfg "${OPENCAST_HOME}/etc/org.opencastproject.userdirectory.moodle-default.cfg"
+
 EXPOSE 8080
 VOLUME [ "${OPENCAST_DATA}" ]
 
