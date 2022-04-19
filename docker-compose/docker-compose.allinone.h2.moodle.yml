@@ -38,15 +38,15 @@ services:
     volumes:
       - elastic:/usr/share/elasticsearch/data
 
-  nginx:
-    image: nginx:latest
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./opencast-moodle/nginx.conf:/etc/nginx/nginx.conf
+  #nginx:
+  #  image: nginx:latest
+  #  ports:
+  #    - "8090:8090"
+  #  volumes:
+  #    - ./opencast-moodle/nginx.conf:/etc/nginx/nginx.conf
 
   opencast:
-    build: opencast-moodle
+    image: quay.io/opencast/allinone:11.3
     environment:
       ORG_OPENCASTPROJECT_SERVER_URL: http://localhost:8080
       ORG_OPENCASTPROJECT_DOWNLOAD_URL: http://localhost:8080/static
@@ -59,10 +59,15 @@ services:
       ACTIVEMQ_BROKER_PASSWORD: password
       ELASTICSEARCH_SERVER_HOST: elasticsearch
       KARAF_DEBUG: '1'
-      DEFAULT_JAVA_DEBUG_OPTS: '-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'
-    expose:
-      - "8080"
+      JAVA_DEBUG_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+   #   DEFAULT_JAVA_DEBUG_OPTS: '-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'
     ports:
       - "5005:5005"
+      - "8080:8080"
     volumes:
+      - ./opencast-moodle/duplicate-event.xml:/opencast/etc/workflows/duplicate-event.xml
+      - ./opencast-moodle/lms-automated-duplicate.xml:/opencast/etc/workflows/lms-automated-duplicate.xml
+      - ./opencast-moodle/lms-publish-duplicate.xml:/opencast/etc/workflows/lms-publish-duplicate.xml
+      - ./opencast-moodle/publish.xml:/opencast/etc/workflows/publish.xml
+      - ./opencast-moodle/schedule-and-upload.xml:/opencast/etc/workflows/schedule-and-upload.xml
       - data:/data
